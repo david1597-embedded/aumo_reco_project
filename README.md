@@ -1,1 +1,1 @@
-# hand_smart_home
+# Auto-motor call solution
