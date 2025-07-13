@@ -5,4 +5,7 @@
 
 
 ## High Level Desgin
-<img width="622" height="422" alt="hld" src="https://github.com/user-attachments/assets/0fa888b6-cf1e-4516-94c7-7826d717c4fb" />
+![high-level-desing-img](./doc/hld.png)
+
+## Use case
+![use-case-img](./doc/usecase.jpg)
