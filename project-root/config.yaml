@@ -1,5 +1,0 @@
-camera_index: 0
-model_xml: "models/hagrid_gesture.xml"
-model_bin: "models/hagrid_gesture.bin"
-input_image: "data/demo_input.jpg"
-output_result: "results/prediction_output.jpg"
