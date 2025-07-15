@@ -11,11 +11,11 @@
 ![use-case-img](./doc/usecase.jpg)
 
 ## 손동작출력 라벨
-전진 -> one
-후진 -> two
-제자리회전(우) ->three2
-제자리회전(좌) ->three
-정지 -> fist
-내 자리로 오기 ->four
-따라오게 하기 ->stop
-일반 모드 전환(대기 상태 해제) -> rock
+전진 -> one\
+후진 -> two\
+제자리회전(우) ->three2\
+제자리회전(좌) ->three\
+정지 -> fist\
+내 자리로 오기 ->four\
+따라오게 하기 ->stop\
+일반 모드 전환(대기 상태 해제) -> rock\
