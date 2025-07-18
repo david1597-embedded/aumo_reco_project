@@ -83,7 +83,7 @@ def main():
             print(f"저장된 점: Left({pt1[0]:.2f}, {pt1[1]:.2f}), Right({pt2[0]:.2f}, {pt2[1]:.2f})")
             
             # 8개 저장 시 종료
-            if len(saved_points) >= 8:
+            if len(saved_points) >= 50:
                 print("8개의 대응점이 저장되었습니다. 프로그램 종료.")
                 break
 

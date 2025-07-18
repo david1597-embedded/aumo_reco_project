@@ -2,8 +2,8 @@ import cv2
 import os
 
 # 카메라 초기화
-left_cam = cv2.VideoCapture(0)
-right_cam = cv2.VideoCapture(2)
+left_cam = cv2.VideoCapture(2)
+right_cam = cv2.VideoCapture(0)
 
 # 카메라가 제대로 열렸는지 확인
 if not left_cam.isOpened() or not right_cam.isOpened():
