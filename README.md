@@ -19,3 +19,6 @@
 내 자리로 오기 ->four\
 따라오게 하기 ->stop\
 일반 모드 전환(대기 상태 해제) -> rock\
+
+## Flowchart
+![flow-chart](./doc/flowchart.png)
