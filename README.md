@@ -43,7 +43,7 @@
 
 ## 🔁 시스템 흐름도 (Flowchart)
 
-![flow-chart](./doc/flowchart.png)
+![flow-chart](./doc/flowchart2.png)
 
 ---
 
