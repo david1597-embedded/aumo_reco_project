@@ -66,6 +66,8 @@ GitHub 링크
 
 [https://github.com/hukenovs/hagrid](https://github.com/hukenovs/hagrid)
 
+[https://github.com/openvinotoolkit/openvino_notebooks/blob/latest/notebooks/vision-monodepth/vision-monodepth.ipynb](https://github.com/openvinotoolkit/openvino_notebooks/blob/latest/notebooks/vision-monodepth/vision-monodepth.ipynb)
+
 블로그 링크
 
 [https://alida.tistory.com/59](https://alida.tistory.com/59)
