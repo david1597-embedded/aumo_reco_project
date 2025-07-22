@@ -8,3 +8,6 @@ venv
 *.onnx
 *.xml
 *.bin
+
+hagrid/
+datasets/
