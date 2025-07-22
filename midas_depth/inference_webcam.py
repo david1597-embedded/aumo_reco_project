@@ -40,7 +40,7 @@ def to_rgb(image_data) -> np.ndarray:
 
 # Model setup
 device = device_widget()
-model_folder = Path("model")
+model_folder = Path("./midas_depth/model")
 
 ir_model_url = "https://storage.openvinotoolkit.org/repositories/openvino_notebooks/models/depth-estimation-midas/FP32/"
 ir_model_name_xml = "MiDaS_small.xml"
@@ -53,7 +53,7 @@ ir_model_name_bin = "MiDaS_small.bin"
 model_xml_path = model_folder / ir_model_name_xml
 
 # Create cache folder
-cache_folder = Path("cache")
+cache_folder = Path("./midas_depth/cache")
 cache_folder.mkdir(exist_ok=True)
 
 # Load and compile model
@@ -79,8 +79,8 @@ if not cap.isOpened():
     exit()
 
 # Set webcam properties (optional)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 512)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 512)
 
 # Initialize variables for FPS calculation
 frame_count = 0
