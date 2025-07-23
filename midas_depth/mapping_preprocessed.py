@@ -82,7 +82,7 @@ network_image_height, network_image_width = network_input_shape[2:]
 
 print(f"Model input shape: {network_input_shape}")
 print(f"Network image dimensions: {network_image_width}x{network_image_height}")
-print("\n=== DEPTH MAP 정보 ===")
+print("=== DEPTH MAP 정보 ===")
 print("• MiDaS는 'inverse depth' 또는 'disparity'를 출력합니다")
 print("• 값이 클수록 = 카메라에 가까운 객체")
 print("• 값이 작을수록 = 카메라에서 먼 객체")

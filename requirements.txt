@@ -3,3 +3,4 @@ opencv-python
 requests 
 tqdm
 matplotlib>=3.4
+RPI.GPIO

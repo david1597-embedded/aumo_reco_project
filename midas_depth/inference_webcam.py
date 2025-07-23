@@ -72,7 +72,7 @@ print(f"Model input shape: {network_input_shape}")
 print(f"Network image dimensions: {network_image_width}x{network_image_height}")
 
 # Initialize webcam
-cap = cv2.VideoCapture(0)  # 0은 기본 웹캠을 의미
+cap = cv2.VideoCapture(0, cv2.CAP_V4L2)  # 0은 기본 웹캠을 의미
 
 if not cap.isOpened():
     print("Error: Could not open webcam")
