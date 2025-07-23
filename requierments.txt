@@ -9,7 +9,6 @@ ultralytics
 openvino
 numpy
 torch
-ultralytics
 onnx>=1.12,<1.18
 onnxslim
 onnxruntime
