@@ -1,0 +1,6 @@
+openvino>=2023.1.0
+opencv-python 
+requests 
+tqdm
+matplotlib>=3.4
+RPI.GPIO

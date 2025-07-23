@@ -1,3 +1,16 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# VSCode settings (optional)
+.vscode/
+*.blob/
+
+# Python cache files
+__pycache__/
+*.py[cod]
 *.pyc
 .venv
 venv
@@ -11,3 +24,4 @@ venv
 
 hagrid/
 datasets/
+
