@@ -1,9 +1,0 @@
-torch
-torchvision
-ultralytics
-openvino
-numpy
-opencv-python
-onnx>=1.12,<1.18
-onnxslim
-onnxruntime
