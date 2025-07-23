@@ -1,9 +1,15 @@
-torch
+openvino>=2023.1.0
+opencv-python 
+requests 
+tqdm
+matplotlib>=3.4
+RPI.GPIOtorch
 torchvision
 ultralytics
 openvino
 numpy
-opencv-python
+torch
+ultralytics
 onnx>=1.12,<1.18
 onnxslim
 onnxruntime
