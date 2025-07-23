@@ -11,3 +11,17 @@ env/
 # Python cache files
 __pycache__/
 *.py[cod]
+*.pyc
+.venv
+venv
+*.jpg
+*.png
+*.pth
+*.pt
+*.onnx
+*.xml
+*.bin
+
+hagrid/
+datasets/
+

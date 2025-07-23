@@ -57,6 +57,12 @@
 
 ---
 
+## model.pt
+
+[resnet50_512_13.pt](https://drive.google.com/file/d/1XPes-AbSbVaECXIOqq8lI9KVgtjQ9sva/view?usp=drive_link)
+
+---
+
 ## 📂 구조 및 폴더 설명
 
 
