@@ -1,5 +1,0 @@
-torch
-torchvision
-ultralytics
-openvino
-numpy
