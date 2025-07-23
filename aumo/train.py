@@ -2,10 +2,10 @@ import os
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from .resnet_model import ResNetModel
-from .config import TARGETS, CLASSIFY_IMAGE_SIZE
+from .model import ResNetModel
+from .config import CLASSIFY_IMAGE_SIZE
 
-def train_resnet50(class_dict:list=TARGETS, size=(CLASSIFY_IMAGE_SIZE, CLASSIFY_IMAGE_SIZE), batch_size=64, epochs=10):
+def train_resnet50(size=(CLASSIFY_IMAGE_SIZE, CLASSIFY_IMAGE_SIZE), batch_size=32, epochs=10):
     transform = transforms.Compose([
         transforms.Resize(size),
         transforms.RandomHorizontalFlip(),
@@ -13,7 +13,7 @@ def train_resnet50(class_dict:list=TARGETS, size=(CLASSIFY_IMAGE_SIZE, CLASSIFY_
         transforms.Normalize([0.485,0.456,0.406], [0.229,0.224,0.225])
     ])
     train_dataset = datasets.ImageFolder('datasets/train', transform=transform)
-    train_dataset.class_to_idx = {v:k for k,v in class_dict.items()}
+    print(train_dataset.class_to_idx)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 
     num_classes = len(train_dataset.classes)
@@ -35,6 +35,9 @@ def train_resnet50(class_dict:list=TARGETS, size=(CLASSIFY_IMAGE_SIZE, CLASSIFY_
             running_loss += loss.item()
 
         print(f"[Epoch {epoch+1}/{epochs}] Loss: {running_loss/len(train_loader):.4f}")
+        if (epoch+1) % 10 == 0 and (epoch+1) != epochs:
+            print(f"Epoch {epoch+1} model save")
+            model.save(f"models/resnet50_middle_{size[0]}_{epoch+1}.pt")
 
     os.makedirs('models', exist_ok=True)
     save_path = f"models/resnet50_{size[0]}_{epochs}.pth"

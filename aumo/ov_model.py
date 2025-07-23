@@ -1,6 +1,6 @@
 import openvino as ov
 import numpy as np
-from .base_model import BaseModel
+from .model import BaseModel
 
 class OVModel(BaseModel):
     def __init__(self, model_path: str, device: str = "CPU"):
