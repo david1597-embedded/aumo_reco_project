@@ -64,5 +64,4 @@ class OVDetectionModel(OVModel):
                 scores.append(score)
                 cls_ids.append(cls_id)
 
-        # return boxes
-        draw_detections(inputs, boxes, scores, cls_ids)
+        return boxes
