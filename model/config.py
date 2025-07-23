@@ -1,5 +1,0 @@
-MODEL_PATH = 'models'
-ONNX_PATH = f'{MODEL_PATH}/onnx'
-XML_PATH = f'{MODEL_PATH}/xml'
-
-DEFAULT_IMGSZ = 640

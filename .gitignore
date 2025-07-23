@@ -1,0 +1,13 @@
+*.pyc
+.venv
+venv
+*.jpg
+*.png
+*.pth
+*.pt
+*.onnx
+*.xml
+*.bin
+
+hagrid/
+datasets/

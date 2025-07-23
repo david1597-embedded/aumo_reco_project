@@ -1,0 +1,187 @@
+# class ModelLoader:
+#     def __init__(self, model_name: str, imgsz: int = DEFAULT_IMGSZ):
+#         self.model_name = model_name
+#         self.imgsz = imgsz
+#         ensure_dirs(MODEL_PATH, ONNX_PATH, XML_PATH)
+#         self.model = None
+
+#     def load(self):
+#         model_path = os.path.join(MODEL_PATH, f"{self.model_name}.pt")
+#         if not os.path.exists(model_path):
+#             # 현재 작업 디렉터리에 .pt가 있으면 MODEL_PATH로 이동
+#             if os.path.exists(f"{self.model_name}.pt"):
+#                 os.rename(f"{self.model_name}.pt", model_path)
+#             else:
+#                 raise FileNotFoundError(f"모델 파일 {self.model_name}.pt를 찾을 수 없습니다.")
+
+#         self.model = YOLO(model_path)
+
+#         print(f"모델 로드 완료: {self.model.model_name}")
+#         return self.model
+
+#     def export(self):
+#         if self.model is None:
+#             raise RuntimeError("모델을 먼저 load() 해야 합니다.")
+#         onnx_file = os.path.join(ONNX_PATH, f"{self.model_name}.onnx")
+#         if not os.path.exists(onnx_file):
+#             print(f"ONNX로 export 중...: {onnx_file}")
+#             export_onnx(self.model, output=onnx_file)
+#         else:
+#             print(f"ONNX 파일이 이미 존재합니다: {onnx_file}")
+#         return onnx_file
+
+#     def convert(self):
+#         xml_file = os.path.join(XML_PATH, f"{self.model_name}.xml")
+#         onnx_file = os.path.join(ONNX_PATH, f"{self.model_name}.onnx")
+#         if not os.path.exists(xml_file):
+#             print(f"OpenVINO로 변환 중...: {xml_file}")
+#             convert_openvino(onnx_file, output=xml_file)
+#         else:
+#             print(f"OpenVINO 파일이 이미 존재합니다: {xml_file}")
+#         return xml_file
+
+
+from ultralytics import YOLO
+import openvino as ov
+import os
+from typing import Tuple
+from .utils import path_and_name
+from .config import MODEL_PATH
+
+def export_onnx(model: YOLO, imgsz: int =640, output: str = None) -> bool:
+    try:
+        model.export(format='onnx', imgsz=imgsz)
+        default_onnx = f"{os.path.splitext(model.model_name)[0]}.onnx"
+
+        if output is None:output = default_onnx
+        else : os.rename(default_onnx, output)
+        print(f"[OK] ONNX export complete: {output}")
+        
+        return True
+    
+    except Exception as e:
+        print(f"[Error] ONNX export failed: {e}")
+        
+        return False
+
+def convert_openvino(onnx_path: str, output: str = None) -> bool:
+    if output is None:
+        dir_path, name = path_and_name(onnx_path)
+        output = os.path.join(dir_path, f"{name}.xml")
+    try:
+        ov_model = ov.convert_model(onnx_path)
+        ov.save_model(ov_model, output)
+        print(f"[OK] OpenVINO conversion complete: {output}")
+        return True
+    except Exception as e:
+        print(f"[Error] OpenVINO conversion failed: {e}")
+        return False
+
+
+
+import os
+
+def ensure_dirs(*dirs):
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
+
+def path_and_name(path: str):
+    dir_path = os.path.dirname(path)
+    name, _ = os.path.splitext(os.path.basename(path))
+    return dir_path, name
+
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import models, transforms, datasets
+from torch.utils.data import DataLoader
+import os
+
+def train_resnet50(class_dict, size=(512, 512), batch_size=64, epochs=10):
+    # print(class_dict)
+    print(size, epochs)
+    os.makedirs('models', exist_ok=True)
+    
+    class_to_idx = {v: k for k, v in class_dict.items()}
+    # print(class_to_idx)
+
+    # class_order = ["no_gesture", "fist", "one", "peace", "peace_inverted",
+    #     "two_up", "two_up_inverted", "three", "three2", "four",
+    #     "stop", "stop_inverted", "rock"]
+
+    # 🔷 1. 데이터셋 & 전처리
+    transform = transforms.Compose([
+        transforms.Resize(size),      # ResNet 입력 크기
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225])
+    ])
+
+    train_dataset = datasets.ImageFolder(root='datasets/train', transform=transform)
+    train_dataset.class_to_idx = class_to_idx
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+
+    # val_dataset = datasets.ImageFolder(root='your_val_dir', transform=transform)
+    # val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
+
+    num_classes = len(train_dataset.classes)  # 클래스 수 자동 계산
+
+    # 🔷 2. 모델 불러오기
+    model = models.resnet50(pretrained=True)
+
+    # 🔷 3. 마지막 layer 교체
+    model.fc = nn.Linear(model.fc.in_features, num_classes)
+
+    # GPU로
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    print(device)
+    model = model.to(device)
+
+    # 🔷 4. 학습 설정
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=1e-4)
+
+    # 🔷 (선택) Feature Extractor로만 사용하고 싶다면 아래처럼 동결
+    # for param in model.parameters():
+    #     param.requires_grad = False
+    # model.fc.weight.requires_grad = True
+    # model.fc.bias.requires_grad = True
+    # optimizer = optim.Adam(model.fc.parameters(), lr=1e-3)
+
+    # 🔷 5. 학습 루프
+    for epoch in range(epochs):
+        model.train()
+        running_loss = 0.0
+        for imgs, labels in train_loader:
+            imgs, labels = imgs.to(device), labels.to(device)
+
+            optimizer.zero_grad()
+            outputs = model(imgs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+
+        print(f"[Epoch {epoch+1}/{epochs}] Loss: {running_loss/len(train_loader):.4f}")
+
+        # 🔷 (선택) validation
+        # model.eval()
+        # correct, total = 0, 0
+        # with torch.no_grad():
+        #     for imgs, labels in val_loader:
+        #         imgs, labels = imgs.to(device), labels.to(device)
+        #         outputs = model(imgs)
+        #         _, preds = torch.max(outputs, 1)
+        #         correct += (preds == labels).sum().item()
+        #         total += labels.size(0)
+
+        # val_acc = correct / total
+        # print(f"Validation Accuracy: {val_acc:.4f}")
+
+    print("✅ 학습 완료!")
+
+    torch.save(model.state_dict(), f'models/resnet50_{size[0]}_{epochs}.pth')
+    print("✅ 저장 완료!")
