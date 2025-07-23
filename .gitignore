@@ -21,6 +21,7 @@ venv
 *.onnx
 *.xml
 *.bin
+*.npz
 
 hagrid/
 datasets/
