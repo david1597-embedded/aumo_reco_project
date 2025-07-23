@@ -2,6 +2,7 @@ import os
 import torch
 import torch.nn as nn
 from torchvision import models
+from torchvision.models import ResNet50_Weights
 from ultralytics import YOLO
 from abc import ABC, abstractmethod
 from .config import MODEL_PATH, ONNX_PATH, XML_PATH, DETECT_IMAGE_SIZE, CLASSIFY_IMAGE_SIZE
@@ -65,13 +66,18 @@ class ResNetModel(BaseModel):
     def __init__(self, num_classes: int = 13, device: str = "cpu", model_path: str = None, pretrained: bool =False):
         self.model_path = model_path
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
-        self.model = models.resnet50(pretrained=pretrained)
+        # self.model = models.resnet50(pretrained=pretrained)
+        self.model = models.resnet50(weights=ResNet50_Weights.DEFAULT if pretrained else None)
         self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
         self.model.to(self.device)
+        self.num_classes = num_classes
 
     def load(self):
         if self.model_path is None:
             print("모델 경로가 지정되지 않아 사전학습 모델을 사용합니다.")
+            self.model = models.resnet50(weights=ResNet50_Weights.DEFAULT)
+            self.model.fc = nn.Linear(self.model.fc.in_features, self.num_classes)
+            self.model.to(self.device)
             self.model.eval()
             return
 
