@@ -8,3 +8,6 @@ torchvision
 ultralytics
 openvino
 numpy
+onnx
+
+
