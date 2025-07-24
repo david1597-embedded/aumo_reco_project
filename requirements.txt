@@ -3,7 +3,8 @@ opencv-python
 requests 
 tqdm
 matplotlib>=3.4
-RPI.GPIOtorch
+RPI.GPIO
+torch
 torchvision
 ultralytics
 openvino
