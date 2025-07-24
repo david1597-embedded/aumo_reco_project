@@ -169,6 +169,7 @@ try:
                     box = boxes[index]
                     # operator와 IoU 계산
                     if operator:
+
                         iou = realsenseCamera.calculate_iou(operator['box'], box)
                         if iou > iou_threshold and iou > best_iou:
                             best_iou = iou
@@ -192,6 +193,13 @@ try:
                     y2 = int(min(original_height, best_detection['box'][1] + best_detection['box'][3]))
                     draw_bounding_box(frame, best_detection['class_id'], best_detection['confidence'], x1, y1, x2, y2)
 
+                    # operator의 거리와 yaw 계산
+                    px = int(x1 + best_detection['box'][2] / 2)
+                    py = int(y1 + best_detection['box'][3] / 2)
+                    distance = realsenseCamera.measuredistance(depth_image, px, py)
+                    yaw, _ = realsenseCamera.measureangle(px, py, distance)
+                    cv2.putText(frame, f"Distance: {distance:.2f}m, Yaw: {yaw:.2f}deg",
+                                (x1, y2 + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
                     # 손동작 분류
                     roi = frame[y1:y2, x1:x2]
                     if roi.size > 0:
@@ -214,9 +222,7 @@ try:
                         elif gesture == "turn_right":
                             motorcontroller.move_rotate_CW()
                         elif gesture == "my_position":
-                            distance , yaw = motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
-                            cv2.putText(frame, f"Distance: {distance:.2f}m, Yaw: {yaw:.2f}deg",
-                                    (x1, y2 + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                            motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
                         elif gesture == "stop":
                             motorcontroller.motor_stop()
 
