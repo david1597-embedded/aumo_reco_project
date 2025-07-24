@@ -106,9 +106,33 @@ while cap.isOpened():
         box = boxes[index]
         detection = {
             'class_id': class_ids[index],
-            'class_name': CLASSES[class_ids[index]],
+            'class_name': Ctry:
+    while True:
+        # Wait for frames
+        frames = pipeline.wait_for_frames()
+        depth_frame = frames.get_depth_frame()
+        color_frame = frames.get_color_frame()
+        if not depth_frame or not color_frame:
+            continue
+
+        # 필터 초기화
+        spatial = rs.spatial_filter()
+        temporal = rs.temporal_filter()
+        hole_filling = rs.hole_filling_filter()LASSES[class_ids[index]],
             'confidence': scores[index],
-            'box': box,
+            'box': try:
+    while True:
+        # Wait for frames
+        frames = pipeline.wait_for_frames()
+        depth_frame = frames.get_depth_frame()
+        color_frame = frames.get_color_frame()
+        if not depth_frame or not color_frame:
+            continue
+
+        # 필터 초기화
+        spatial = rs.spatial_filter()
+        temporal = rs.temporal_filter()
+        hole_filling = rs.hole_filling_filter()box,
             'scale': scale}
         detections.append(detection)
         draw_bounding_box(frame, class_ids[index], scores[index], round(box[0] * scale), round(box[1] * scale),
@@ -121,7 +145,7 @@ while cap.isOpened():
 
     # 결과 출력
     cv2.putText(frame, f"Predicted: {TARGETS[output]}", (0, 45),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255,TARGETS 0), 2)
     
     end = time.time()
     # show FPS

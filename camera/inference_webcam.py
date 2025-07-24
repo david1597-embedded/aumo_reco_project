@@ -40,7 +40,7 @@ def to_rgb(image_data) -> np.ndarray:
 
 # Model setup
 device = device_widget()
-model_folder = Path("./midas_depth/model")
+model_folder = Path("./camera/model")
 
 ir_model_url = "https://storage.openvinotoolkit.org/repositories/openvino_notebooks/models/depth-estimation-midas/FP32/"
 ir_model_name_xml = "MiDaS_small.xml"
@@ -53,7 +53,7 @@ ir_model_name_bin = "MiDaS_small.bin"
 model_xml_path = model_folder / ir_model_name_xml
 
 # Create cache folder
-cache_folder = Path("./midas_depth/cache")
+cache_folder = Path("./camera/cache")
 cache_folder.mkdir(exist_ok=True)
 
 # Load and compile model
@@ -72,7 +72,7 @@ print(f"Model input shape: {network_input_shape}")
 print(f"Network image dimensions: {network_image_width}x{network_image_height}")
 
 # Initialize webcam
-cap = cv2.VideoCapture(0, cv2.CAP_V4L2)  # 0은 기본 웹캠을 의미
+cap = cv2.VideoCapture(2, cv2.CAP_V4L2)  # 0은 기본 웹캠을 의미
 
 if not cap.isOpened():
     print("Error: Could not open webcam")
