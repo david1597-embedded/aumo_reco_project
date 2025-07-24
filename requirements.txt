@@ -9,5 +9,5 @@ ultralytics
 openvino
 numpy
 onnx
-
+pyrealsense2
 

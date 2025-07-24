@@ -62,7 +62,7 @@ def mouse_callback(event, x, y, flags, param):
 
 # Model setup
 device = device_widget()
-model_folder = Path("./midas_depth/model")
+model_folder = Path("./camera/model")
 
 ir_model_url = "https://storage.openvinotoolkit.org/repositories/openvino_notebooks/models/depth-estimation-midas/FP32/"
 ir_model_name_xml = "MiDaS_small.xml"
@@ -71,7 +71,7 @@ ir_model_name_bin = "MiDaS_small.bin"
 model_xml_path = model_folder / ir_model_name_xml
 
 # Create cache folder
-cache_folder = Path("./midas_depth/cache")
+cache_folder = Path("./camera/cache")
 cache_folder.mkdir(exist_ok=True)
 
 # Load and compile model
