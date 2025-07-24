@@ -57,7 +57,7 @@ class RealSense:
         pitch = math.degrees(math.atan2(Y, Z))
         return yaw , pitch
 
-    def get_intrinsic_camera(self,cam_param_path):
+    def get_intrinsic_camerameasuredistance(self,cam_param_path):
         data = np.load(cam_param_path)
         camera_matrix = data['camera_matrix']
         dist_coeffs = data['dist_coeffs']
