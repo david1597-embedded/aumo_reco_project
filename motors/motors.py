@@ -89,5 +89,11 @@ class MotorController:
         self.left_pwm.ChangeDutyCycle(0)
         self.right_pwm.ChangeDutyCycle(0)
 
+    def calculate_rotate_speed(self):
+        pass
+
+    def my_position(self, box):
+        pass
+
     
 

@@ -91,13 +91,37 @@ class RealSense:
         print(f"현재 카메라 y축 주점 : {cy}")
 
         return fx, fy, cx, cy , k1, k2, k3, p1, p2
-
-
-
-     
-
     
-                
+    def calculate_iou(self,box1, box2):
+        # box: [x1, y1, width, height]
+        x1_1, y1_1, w1, h1 = box1
+        x1_2, y1_2, w2, h2 = box2
+        x2_1, y2_1 = x1_1 + w1, y1_1 + h1
+        x2_2, y2_2 = x1_2 + w2, y1_2 + h2
+
+        # 교차 영역 좌표
+        xi1 = max(x1_1, x1_2)
+        yi1 = max(y1_1, y1_2)
+        xi2 = min(x2_1, x2_2)
+        yi2 = min(y2_1, y2_2)
+
+        # 교차 영역 넓이
+        inter_area = max(0, xi2 - xi1) * max(0, yi2 - yi1)
+
+        # 합집합 영역 넓이
+        box1_area = w1 * h1
+        box2_area = w2 * h2
+        union_area = box1_area + box2_area - inter_area
+
+        # IoU 계산
+        return inter_area / union_area if union_area > 0 else 0
+
+
+
+        
+
+        
+                    
 
 
 
