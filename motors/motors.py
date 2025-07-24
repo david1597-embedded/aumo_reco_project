@@ -53,6 +53,8 @@ class MotorController:
     
     def motor_forward(self):
     # 좌측 모터 정방향
+        self.left_pwm.ChangeFrequency(2300)
+        self.right_pwm.ChangeFrequency(2300)
         self.left_motor_control('FW')
         self.rigth_motor_control('FW')        
         # PWM 속도 설정
@@ -60,26 +62,32 @@ class MotorController:
         self.right_pwm.ChangeDutyCycle(74)
     
     def motor_backward(self):
+        self.left_pwm.ChangeFrequency(2300)
+        self.right_pwm.ChangeFrequency(2300)
         self.left_motor_control('BW')
         self.rigth_motor_control('BW') 
         # PWM 속도 설정
-        self.left_pwm.ChangeDutyCycle(74)
-        self.right_pwm.ChangeDutyCycle(74)
+        self.left_pwm.ChangeDutyCycle(100)
+        self.right_pwm.ChangeDutyCycle(100)
 
     def motor_rotate_CW(self):
+        self.left_pwm.ChangeFrequency(100)
+        self.right_pwm.ChangeFrequency(100)
         self.left_motor_control('FW')
         self.rigth_motor_control('BW')
           # PWM 속도 설정
-        self.left_pwm.ChangeDutyCycle(74)
-        self.right_pwm.ChangeDutyCycle(74)
+        self.left_pwm.ChangeDutyCycle(100)
+        self.right_pwm.ChangeDutyCycle(100)
        
 
     def motor_rotate_CCW(self):
+        self.left_pwm.ChangeFrequency(100)
+        self.right_pwm.ChangeFrequency(100)
         self.left_motor_control('BW')
         self.rigth_motor_control('FW')
           # PWM 속도 설정
-        self.left_pwm.ChangeDutyCycle(74)
-        self.right_pwm.ChangeDutyCycle(74)
+        self.left_pwm.ChangeDutyCycle(100)
+        self.right_pwm.ChangeDutyCycle(100)
        
 
     def motor_stop(self):

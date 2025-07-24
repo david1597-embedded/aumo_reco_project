@@ -63,6 +63,15 @@
 
 ---
 
+## 기타 카메라 파라미터 및 MiDaS small IR format 다운로드 링크
+[Camera_parameter.npz](https://drive.google.com/file/d/1U1zgCAN8ko_Zh77OCTNEXTZ4D10-5htZ/view?usp=drive_link)\
+[MiDaS_small.bin, MiDas_msall.xml](https://drive.google.com/drive/folders/1GOaFV2Jkt80BED27tQxPsBZa5NOTey_w?usp=drive_link)
+
+
+-->다운로드 후 npz파일은 camera디렉토리에 첨부. xml, bin 파일은 camera/models에 첨부.
+**카메라 파라미터는 본인이 사용하는 webcam에 맞게 calibration을 직접 진행해주셔야합니다**
+--
+
 ## 📂 구조 및 폴더 설명
 
 
