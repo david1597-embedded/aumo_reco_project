@@ -69,6 +69,7 @@
 
 
 -->다운로드 후 npz파일은 camera디렉토리에 첨부. xml, bin 파일은 camera/models에 첨부.
+**카메라 파라미터는 본인이 사용하는 webcam에 맞게 calibration을 직접 진행해주셔야합니다**
 --
 
 ## 📂 구조 및 폴더 설명
