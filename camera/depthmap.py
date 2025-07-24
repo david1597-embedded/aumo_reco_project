@@ -91,7 +91,7 @@ print("• 정규화 후: 0 = 가장 먼 지점, 1 = 가장 가까운 지점")
 print("=" * 50)
 
 # Initialize webcam
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
 
 if not cap.isOpened():
     print("Error: Could not open webcam")

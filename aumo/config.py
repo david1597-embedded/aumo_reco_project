@@ -11,20 +11,36 @@ CLASSIFY_IMAGE_SIZE = 512
 
 IMAGES = (".jpeg", ".jpg", ".jp2", ".png", ".tiff", ".jfif", ".bmp", ".webp", ".heic")
 
+# TARGETS = {
+#     0: "no_gesture",
+#     1: "fist",
+#     2: "one",
+#     3: "peace", # two
+#     4: "peace_inverted",
+#     5: "two_up",
+#     6: "two_up_inverted",
+#     7: "three",
+#     8: "three2",
+#     9: "four",
+#     10: "stop",
+#     11: "stop_inverted",
+#     12: "rock"
+# }
+
 TARGETS = {
     0: "no_gesture",
-    1: "fist",
-    2: "one",
-    3: "peace", # two
-    4: "peace_inverted",
-    5: "two_up",
-    6: "two_up_inverted",
-    7: "three",
-    8: "three2",
-    9: "four",
-    10: "stop",
-    11: "stop_inverted",
-    12: "rock"
+    1: "stop",
+    2: "forward",
+    3: "backward", # two
+    4: "backward",
+    5: "backward",
+    6: "backward",
+    7: "turn_left",
+    8: "turn_right",
+    9: "my_position",
+    10: "follow",
+    11: "follow",
+    12: "wake_up"
 }
 
 CLASS_NAMES = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
