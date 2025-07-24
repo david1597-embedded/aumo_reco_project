@@ -58,7 +58,7 @@ class MotorController:
         self.left_pwm.ChangeFrequency(2300)
         self.right_pwm.ChangeFrequency(2300)
         self.left_motor_control('FW')
-        self.rigth_motor_control('FW')        
+        self.right_motor_control('FW')        
         # PWM 속도 설정
         self.left_pwm.ChangeDutyCycle(74)
         self.right_pwm.ChangeDutyCycle(74)
@@ -67,7 +67,7 @@ class MotorController:
         self.left_pwm.ChangeFrequency(2300)
         self.right_pwm.ChangeFrequency(2300)
         self.left_motor_control('BW')
-        self.rigth_motor_control('BW') 
+        self.right_motor_control('BW') 
         # PWM 속도 설정
         self.left_pwm.ChangeDutyCycle(100)
         self.right_pwm.ChangeDutyCycle(100)
@@ -76,7 +76,7 @@ class MotorController:
         self.left_pwm.ChangeFrequency(100)
         self.right_pwm.ChangeFrequency(100)
         self.left_motor_control('FW')
-        self.rigth_motor_control('BW')
+        self.right_motor_control('BW')
           # PWM 속도 설정
         self.left_pwm.ChangeDutyCycle(100)
         self.right_pwm.ChangeDutyCycle(100)
