@@ -100,8 +100,9 @@ class MotorController:
     def calculate_rotate_speed(self):
         pass
 
-    def my_position(self, box):
+    def my_position(self, box , depth_frame);
         pass
-
+        
+    
     
 
