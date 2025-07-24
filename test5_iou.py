@@ -214,7 +214,11 @@ try:
                         elif gesture == "turn_right":
                             motorcontroller.move_rotate_CW()
                         elif gesture == "my_position":
-                            motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
+                            distance , yaw = motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
+                            cv2.putText(frame, f"Distance: {distance:.2f}m, Yaw: {yaw:.2f}deg",
+                                    (x1, y2 + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                        elif gesture == "stop":
+                            motorcontroller.motor_stop()
 
                         # 손동작 타임아웃 관리 (wake_up 제외)
                         if gesture != last_gesture and gesture != "wake_up":

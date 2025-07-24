@@ -143,6 +143,8 @@ class MotorController:
         # 모터 정지
         self.motor_stop()
 
+        return distance, yaw
+
         
     
     
