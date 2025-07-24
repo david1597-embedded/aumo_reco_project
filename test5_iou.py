@@ -3,6 +3,7 @@ import time
 import torch
 import numpy as np
 from camera.realsense import RealSense
+from motors import MotorController
 from aumo.ov_model import OVDetectionModel, OVClassificationModel
 from aumo.model import YOLOModel, ResNetModel
 from aumo.config import CLASS_NAMES, TARGETS
@@ -18,16 +19,7 @@ classfication = OVClassificationModel('models/xml/resnet50_512_10.xml')
 yolo.load()
 classfication.load()
 
-# 모터 컨트롤러 가정
-class MotorController:
-    def move_forward(self):
-        pass  # 실제 구현 필요
-    def move_backward(self):
-        pass
-    def move_rotate_CCW(self):
-        pass
-    def move_rotate_CW(self):
-        pass
+
 
 motorcontroller = MotorController()
 
@@ -221,6 +213,8 @@ try:
                             motorcontroller.move_rotate_CCW()
                         elif gesture == "turn_right":
                             motorcontroller.move_rotate_CW()
+                        elif gesture == "my_position":
+                            motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
 
                         # 손동작 타임아웃 관리 (wake_up 제외)
                         if gesture != last_gesture and gesture != "wake_up":
