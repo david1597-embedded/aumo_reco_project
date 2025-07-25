@@ -59,7 +59,7 @@ last_gesture = None  # 마지막 손동작
 prev_time = time.time()
 try:
     while True:
-        frame, depth_image = realsenseCamera.getframe()
+        frame, depth_image ,depth_frame = realsenseCamera.getframe()
 
         start = time.time()
         curr_time = time.time()
@@ -145,6 +145,7 @@ try:
                             cv2.putText(frame, f"Hand: {gesture}", (x1, y2 + 20),
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
+                 
                             # "wake_up" 감지 시 operator 지정 및 NORMAL 모드로 전환
                             if gesture == "wake_up":
                                 state = "NORMAL"
@@ -203,6 +204,24 @@ try:
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                             cv2.putText(frame, "operator", (x1, y1 - 30),
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+                        # 거리와 각도 측정
+                        px = int(x1 + (x2 - x1) / 2)  # 바운딩 박스 중심 x
+                        py = int(y1 + (y2 - y1) / 2)  # 바운딩 박스 중심 y
+                        
+                        distance = realsenseCamera.measuredistance(depth_frame, px, py)
+                        yaw, pitch = realsenseCamera.measureangle(px, py, distance)
+                        
+                        # 거리와 각도 표시
+                                 # 거리와 각도 표시 (바운딩 박스 오른편, 작은 폰트)
+                        font_scale = 0.5  # 더 작은 폰트 크기
+                        text_x = x2 + 10  # 바운딩 박스 오른쪽으로 10픽셀 이동
+                        cv2.putText(frame, f"Dist: {distance:.2f} m", (text_x, y1 + 20),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+                        cv2.putText(frame, f"Yaw: {yaw:.2f} deg", (text_x, y1 + 40),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+                        cv2.putText(frame, f"Pitch: {pitch:.2f} deg", (text_x, y1 + 60),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
 
                         # 모터 제어 (주석 처리된 부분 유지)
                         # if gesture == "forward":
