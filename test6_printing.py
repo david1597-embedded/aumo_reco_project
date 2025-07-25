@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 from openvino import Core
 
 # RealSense 카메라 초기화
-realsenseCamera = RealSense(filter_size=3, filter_use=False)
+realsenseCamera = RealSense(filter_size=3, filter_use=False, cam_param_path = './camera/camera_parameter_real.npz')
 
 # 모델 초기화
 yolo = OVDetectionModel('models/xml/yolov5nu.xml')

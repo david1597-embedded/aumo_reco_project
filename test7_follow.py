@@ -3,6 +3,7 @@ import time
 import torch
 import numpy as np
 from camera.realsense import RealSense
+from motors.motors import MotorController
 from aumo.ov_model import OVDetectionModel, OVClassificationModel
 from aumo.model import YOLOModel, ResNetModel
 from aumo.config import CLASS_NAMES, TARGETS
@@ -10,14 +11,14 @@ import torchvision.transforms as transforms
 from openvino import Core
 
 # RealSense 카메라 초기화
-realsenseCamera = RealSense(filter_size=3, filter_use=False)
+realsenseCamera = RealSense(filter_size=3, filter_use=False, cam_param_path = './camera/camera_parameter_real.npz')
 
 # 모델 초기화
 yolo = OVDetectionModel('models/xml/yolov5nu.xml')
 classfication = OVClassificationModel('models/xml/resnet50_512_10.xml')
 yolo.load()
 classfication.load()
-
+motorController= MotorController()
 # 상수 및 설정
 CLASSES = CLASS_NAMES
 colors = np.random.uniform(0, 255, size=(len(CLASSES), 3))
@@ -230,9 +231,27 @@ try:
                                     cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
                         cv2.putText(frame, f"Pitch: {pitch:.2f} deg", (text_x, y1 + 60),
                                     cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
-
-                        # "follow" 감지 시 FOLLOW 모드로 전환
-                        if gesture == "follow":
+                         #모터 제어 (주석 처리된 부분 유지)
+                        if gesture == "forward":
+                            motorController.move_forward()
+                            print("move forward")
+                        elif gesture == "backward":
+                            motorController.move_backward()  
+                            print("move backward")
+                        elif gesture == "turn_left":
+                            motorController.move_rotate_CCW()
+                            print("turn left")
+                        elif gesture == "turn_right":
+                            motorController.move_rotate_CW()
+                            print("turn right")
+                        elif gesture == "my_position":
+                            motorController.my_position(realsenseCamera, best_detection['box'], depth_image)
+                            print("go to operator position")
+                        elif gesture == "stop":
+                            motorController.motor_stop()
+                            print("motor stop")
+                        #"follow" 감지 시 FOLLOW 모드로 전환
+                        elif gesture == "follow":
                             state = "FOLLOW"
                             lock_start_time = time.time()
                             gesture_start_time = time.time()
@@ -350,7 +369,8 @@ try:
 
                         # 주기적으로 my_position 호출 (3초마다)
                         if last_position_time is None or (time.time() - last_position_time) >= position_interval:
-                            # motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
+                            motorController.my_position(realsenseCamera, best_detection['box'], depth_image)
+                            print("following operator....")
                             last_position_time = time.time()
 
                         # "follow" 감지 시 IDLE로 전환
