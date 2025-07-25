@@ -114,38 +114,42 @@ class MotorController:
         # 각도 계산
         yaw, pitch = realsenseCamera.measureangle(px, py, distance)
         
-        # 이동 거리: distance - 0.5m
-        move_distance = max(0, distance - 0.5)  # 음수 방지
-        
-        # 실험 데이터 기반 속도
-        linear_speed = 1 / 3  # 1m에 3초 → 0.3333 m/s
-        angular_speed = 20  # 180도에 9초 → 20 deg/s
-        
-        # 회전 시간 계산
-        rotate_time = abs(yaw) / angular_speed
-        
-        # 이동 시간 계산
-        move_time = move_distance / linear_speed
-        
-        # 회전 수행
-        if yaw > 0:
-            self.motor_rotate_CW()
-            time.sleep(rotate_time)
-        elif yaw < 0:
-            self.motor_rotate_CCW()
-            time.sleep(rotate_time)
-        
-        # 이동 수행
-        if move_distance > 0:
-            self.motor_forward()
-            time.sleep(move_time)
-        
-        # 모터 정지
-        self.motor_stop()
+        if distance >= 0.75:
 
-        return distance, yaw
+            # 이동 거리: distance - 0.5m
+            move_distance = max(0, distance - 0.5)  # 음수 방지
+            
+            # 실험 데이터 기반 속도
+            linear_speed = 1 / 3  # 1m에 3초 → 0.3333 m/s
+            angular_speed = 20  # 180도에 9초 → 20 deg/s
+            
+            # 회전 시간 계산
+            rotate_time = abs(yaw) / angular_speed
+            
+            # 이동 시간 계산
+            move_time = move_distance / linear_speed
+            
+            # 회전 수행
+            if yaw > 0:
+                self.motor_rotate_CW()
+                time.sleep(rotate_time)
+            elif yaw < 0:
+                self.motor_rotate_CCW()
+                time.sleep(rotate_time)
+            
+            # 이동 수행
+            if move_distance > 0:
+                self.motor_forward()
+                time.sleep(move_time)
+            
+            # 모터 정지
+            self.motor_stop()
 
+            return distance, yaw
+        elif:
+            return distance, yaw
+
+            
         
-    
-    
+        
 
