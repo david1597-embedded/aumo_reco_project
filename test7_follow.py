@@ -3,7 +3,6 @@ import time
 import torch
 import numpy as np
 from camera.realsense import RealSense
-#from motors import MotorController
 from aumo.ov_model import OVDetectionModel, OVClassificationModel
 from aumo.model import YOLOModel, ResNetModel
 from aumo.config import CLASS_NAMES, TARGETS
@@ -18,10 +17,6 @@ yolo = OVDetectionModel('models/xml/yolov5nu.xml')
 classfication = OVClassificationModel('models/xml/resnet50_512_10.xml')
 yolo.load()
 classfication.load()
-
-
-
-#motorcontroller = MotorController()
 
 # 상수 및 설정
 CLASSES = CLASS_NAMES
@@ -55,11 +50,13 @@ iou_threshold = 0.5  # IoU 추적 임계값
 gesture_timeout = 10  # no_gesture/stop 유지 시간(초)
 gesture_start_time = None  # 마지막 손동작 시간
 last_gesture = None  # 마지막 손동작
+last_position_time = None  # 마지막 my_position 호출 시간
+position_interval = 3  # my_position 호출 간격(초)
 
 prev_time = time.time()
 try:
     while True:
-        frame, depth_image = realsenseCamera.getframe()
+        frame, depth_image, depth_frame = realsenseCamera.getframe()
 
         start = time.time()
         curr_time = time.time()
@@ -157,6 +154,19 @@ try:
                                 # 사진 촬영
                                 timestamp = time.strftime("%Y%m%d_%H%M%S")
                                 cv2.imwrite(f"capture_{timestamp}.jpg", frame)
+                            # "follow" 감지 시 operator 지정 및 FOLLOW 모드로 전환
+                            elif gesture == "follow":
+                                state = "FOLLOW"
+                                operator = detection
+                                lock_start_time = time.time()
+                                gesture_start_time = time.time()
+                                last_gesture = gesture
+                                last_position_time = time.time()  # my_position 호출 시간 초기화
+                                cv2.putText(frame, "operator", (x1, y1 - 30),
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                                # 사진 촬영
+                                timestamp = time.strftime("%Y%m%d_%H%M%S")
+                                cv2.imwrite(f"capture_{timestamp}.jpg", frame)
 
         elif state == "NORMAL":
             # NORMAL 상태: operator 객체만 감지, 다른 객체는 무시
@@ -204,19 +214,31 @@ try:
                             cv2.putText(frame, "operator", (x1, y1 - 30),
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-                        # 모터 제어 (주석 처리된 부분 유지)
-                        # if gesture == "forward":
-                        #     motorcontroller.move_forward()
-                        # elif gesture == "backward":
-                        #     motorcontroller.move_backward()
-                        # elif gesture == "turn_left":
-                        #     motorcontroller.move_rotate_CCW()
-                        # elif gesture == "turn_right":
-                        #     motorcontroller.move_rotate_CW()
-                        # elif gesture == "my_position":
-                        #     motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
-                        # elif gesture == "stop":
-                        #     motorcontroller.motor_stop()
+                        # 거리와 각도 측정
+                        px = int(x1 + (x2 - x1) / 2)  # 바운딩 박스 중심 x
+                        py = int(y1 + (y2 - y1) / 2)  # 바운딩 박스 중심 y
+                        
+                        distance = realsenseCamera.measuredistance(depth_frame, px, py)
+                        yaw, pitch = realsenseCamera.measureangle(px, py, distance)
+                        
+                        # 거리와 각도 표시
+                        font_scale = 0.5
+                        text_x = x2 + 10
+                        cv2.putText(frame, f"Dist: {distance:.2f} m", (text_x, y1 + 20),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+                        cv2.putText(frame, f"Yaw: {yaw:.2f} deg", (text_x, y1 + 40),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+                        cv2.putText(frame, f"Pitch: {pitch:.2f} deg", (text_x, y1 + 60),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+
+                        # "follow" 감지 시 FOLLOW 모드로 전환
+                        if gesture == "follow":
+                            state = "FOLLOW"
+                            lock_start_time = time.time()
+                            gesture_start_time = time.time()
+                            last_gesture = gesture
+                            last_position_time = time.time()  # my_position 호출 시간 초기화
+                            continue
 
                         # 손동작 타임아웃 관리 (wake_up 제외)
                         if gesture != last_gesture and gesture != "wake_up":
@@ -226,14 +248,15 @@ try:
                 # 최소 3초 유지 체크
                 elapsed_time = time.time() - lock_start_time
                 if elapsed_time < min_lock_duration:
-                    continue  # 최소 3초 동안은 상태 유지
+                    continue
 
-                # "wake_up" 감지 시 IDLE로 전환 (3초 경과 후)
+                # "wake_up" 감지 시 IDLE로 전환
                 if best_detection and gesture == "wake_up" and elapsed_time >= min_lock_duration:
                     state = "IDLE"
                     operator = None
                     gesture_start_time = None
                     last_gesture = None
+                    last_position_time = None
                     continue
 
                 # "no_gesture" 또는 "stop" 10초 유지 시 IDLE로 전환
@@ -243,22 +266,139 @@ try:
                         operator = None
                         gesture_start_time = None
                         last_gesture = None
+                        last_position_time = None
                         continue
 
-                # 타임아웃 체크 (3초 경과 후)
+                # 타임아웃 체크
                 if elapsed_time > lock_timeout:
                     state = "IDLE"
                     operator = None
                     gesture_start_time = None
                     last_gesture = None
+                    last_position_time = None
                     continue
 
-                # operator가 프레임에서 사라짐 (3초 경과 후)
+                # operator가 프레임에서 사라짐
                 if not found_operator:
                     state = "IDLE"
                     operator = None
                     gesture_start_time = None
                     last_gesture = None
+                    last_position_time = None
+
+        elif state == "FOLLOW":
+            # FOLLOW 상태: operator 추적 및 주기적 my_position 호출
+            found_operator = False
+            best_iou = 0
+            best_detection = None
+            if len(result_boxes) > 0:
+                for i in range(len(result_boxes)):
+                    index = result_boxes[i]
+                    box = boxes[index]
+                    # operator와 IoU 계산
+                    if operator:
+                        iou = realsenseCamera.calculate_iou(operator['box'], box)
+                        if iou > iou_threshold and iou > best_iou:
+                            best_iou = iou
+                            best_detection = {
+                                'class_id': class_ids[index],
+                                'class_name': CLASSES[class_ids[index]],
+                                'confidence': scores[index],
+                                'box': box,
+                                'scale': 1.0
+                            }
+
+                # operator만 처리
+                if best_detection:
+                    found_operator = True
+                    operator = best_detection  # operator 업데이트
+
+                    # 바운딩 박스 그리기
+                    x1 = int(max(0, best_detection['box'][0]))
+                    y1 = int(max(0, best_detection['box'][1]))
+                    x2 = int(min(original_width, best_detection['box'][0] + best_detection['box'][2]))
+                    y2 = int(min(original_height, best_detection['box'][1] + best_detection['box'][3]))
+                    draw_bounding_box(frame, best_detection['class_id'], best_detection['confidence'], x1, y1, x2, y2)
+
+                    # 손동작 분류
+                    roi = frame[y1:y2, x1:x2]
+                    if roi.size > 0:
+                        with torch.no_grad():
+                            input_tensor = transform(roi).unsqueeze(0).to(device)
+                            output, _ = classfication.predict(input_tensor)
+                            gesture = TARGETS[output]
+                            cv2.putText(frame, f"Hand: {gesture}", (x1, y2 + 20),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                            cv2.putText(frame, "operator", (x1, y1 - 30),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+                        # 거리와 각도 측정
+                        px = int(x1 + (x2 - x1) / 2)
+                        py = int(y1 + (y2 - y1) / 2)
+                        distance = realsenseCamera.measuredistance(depth_frame, px, py)
+                        yaw, pitch = realsenseCamera.measureangle(px, py, distance)
+
+                        # 거리와 각도 표시
+                        font_scale = 0.5
+                        text_x = x2 + 10
+                        cv2.putText(frame, f"Dist: {distance:.2f} m", (text_x, y1 + 20),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+                        cv2.putText(frame, f"Yaw: {yaw:.2f} deg", (text_x, y1 + 40),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+                        cv2.putText(frame, f"Pitch: {pitch:.2f} deg", (text_x, y1 + 60),
+                                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 0), 2)
+
+                        # 주기적으로 my_position 호출 (3초마다)
+                        if last_position_time is None or (time.time() - last_position_time) >= position_interval:
+                            # motorcontroller.my_position(realsenseCamera, best_detection['box'], depth_image)
+                            last_position_time = time.time()
+
+                        # "follow" 감지 시 IDLE로 전환
+                        if gesture == "follow":
+                            state = "IDLE"
+                            operator = None
+                            gesture_start_time = None
+                            last_gesture = None
+                            last_position_time = None
+                            continue
+
+                        # 손동작 타임아웃 관리
+                        if gesture != last_gesture:
+                            gesture_start_time = time.time()
+                            last_gesture = gesture
+
+                # 최소 3초 유지 체크
+                elapsed_time = time.time() - lock_start_time
+                if elapsed_time < min_lock_duration:
+                    continue
+
+                # "no_gesture" 또는 "stop" 10초 유지 시 IDLE로 전환
+                if best_detection and gesture in ["no_gesture", "stop"]:
+                    if gesture_start_time and (time.time() - gesture_start_time) > gesture_timeout:
+                        state = "IDLE"
+                        operator = None
+                        gesture_start_time = None
+                        last_gesture = None
+                        last_position_time = None
+                        continue
+
+                # 타임아웃 체크
+                if elapsed_time > lock_timeout:
+                    state = "IDLE"
+                    operator = None
+                    gesture_start_time = None
+                    last_gesture = None
+                    last_position_time = None
+                    continue
+
+                # operator가 프레임에서 사라짐
+                if not found_operator:
+                    state = "IDLE"
+                    operator = None
+                    gesture_start_time = None
+                    last_gesture = None
+                    last_position_time = None
+
         # 현재 모드 표시 (우측 상단)
         mode_label = f"Mode: {state}"
         cv2.putText(frame, mode_label, (original_width - 180, 25),
