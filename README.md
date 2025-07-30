@@ -13,7 +13,11 @@
 여러 객체인식, 분류기 모델들의 벤치마킹을 통한 모델 기능 비교
 
 ---
-## 
+## 📊 간트 차트
+
+![gantchart](./doc/gantchart.PNG)
+
+---
 
 ## 🏗 High Level Design
 
