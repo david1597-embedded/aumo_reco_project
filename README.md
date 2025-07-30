@@ -13,11 +13,6 @@
 여러 객체인식, 분류기 모델들의 벤치마킹을 통한 모델 기능 비교
 
 ---
-## 📊 간트 차트
-
-![gantchart](./doc/gantchart.PNG)
-
----
 
 ## 🏗 High Level Design
 
@@ -28,6 +23,12 @@
 ## 💡 Use Case
 
 ![use-case-img](./doc/usecase.jpg)
+
+---
+
+## 📊 간트 차트
+
+![gantchart](./doc/gantchart.PNG)
 
 ---
 
@@ -52,9 +53,14 @@
 
 ---
 
+## 시스템 구성도
+
+![system](./doc/hardware.JPG)
+--
+
 ## 📌 주요 기술 스택
 
-
+- `😯 Stereo Vision system ` : 스테레오 비젼 시스템 기반 거리 측정 시스템
 - `🎥 Monodepth Estimation `: 깊이 인식 기반 거리 측정 및 방향 추정 (팔로잉 기능 및 요청자 위치까지 이동 기능에 활용)
 - `👋 Hand Gesture Detection`: 요청자의 손동작에 따른 팔로잉 로봇 카 제어
 - `🎯 Object Detection`: 사람 객체 인식기반으로 요청자 고정
