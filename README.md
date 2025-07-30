@@ -81,11 +81,11 @@
 
 ### 🚗 모터, 카메라 관련 모듈
 
-[!motor_camera_class_diagram](./doc/class_diagra_moon.PNG)
+![motor_camera_class_diagram](./doc/class_diagra_moon.PNG)
 
 ### 📡 인공지능 관련 모듈
 
-[!ai_class_diagram](./doc/class_diagram_kim.PNG)
+![ai_class_diagram](./doc/class_diagram_kim.PNG)
 
 ---
 
