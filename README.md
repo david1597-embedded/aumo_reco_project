@@ -6,7 +6,8 @@
 ![Library](https://img.shields.io/badge/Library-OpenCV-blueviolet)
 ![Toolkit](https://img.shields.io/badge/Toolkit-OpenVINO-success)
 
-비젼기반 거리 측정 시스템과 객체 인식 모델을 융합한 팔로잉 로봇 카 프로젝트
+
+비젼(스테레오 비젼, monodepth estimation)기반 거리 측정 시스템과 객체 인식 모델을 융합한 팔로잉 로봇 카 프로젝트
 
 다양한 상황에 대응되는 시나리오로 여러 기능을 제공(카 이동, 카 회전, 요청자 위치까지 이동, 요청자 따라가기)
 
@@ -98,6 +99,70 @@
 ![ai_class_diagram](./doc/class_diagram_kim.PNG)
 
 ---
+
+## 실행
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+git clone https://github.com/david1597-embedded/aumo_reco_project.git
+pip install -r requirements.txt
+//테스트 실행
+python3 test7_follow.py
+```
+
+---
+
+
+## 📦 실습 하드웨어 환경
+
+### 🛠️ 사용 하드웨어
+
+| 하드웨어 | 설명 | 비고 |
+|----------|------|------|
+| **ABKO WebCam** | 일반 USB 웹캠 | 입력 영상 수집용. 주로 YOLO 및 ResNet50과 같은 모델의 실시간 추론에 사용됨. |
+| **Intel Realsense (D435)** | 깊이 정보 획득 가능한 RGB-D 카메라 | Monodepth(MiDaS) 성능 비교 및 보완 목적. 실제 Depth와 MiDaS 추정 Depth 간 성능 비교 후 결정 |
+| **Raspberry Pi 4B (4GB/8GB)** | ARM 기반 저전력 컴퓨팅 보드 | 전체 시스템 구동 및 모델 추론 담당. 특히 lightweight 모델 추론에 적합. |
+
+---
+
+### 🧠 사용 AI 모델
+
+| 모델명 | 용도 | 비고 |
+|--------|------|------|
+| **YOLO (v5s/v8n 등)** | 객체 인식 (bounding box) | 실시간 처리에 최적화. | 
+| **ResNet50** | 객체 분류 (classification) | 고정된 이미지의 label 분류용. Pi에서도 가능하나 추론 시간이 길어질 수 있음. | 
+| **MiDaS (MiDaS Small)** | 단일 영상 기반 Depth 추정 | Monodepth 모델 중 비교적 경량화된 버전.  |
+
+---
+
+### 🛠️ 최적화 도구
+
+| 도구명 | 용도 |
+| ------ | -----|
+| OpenVINO | 라즈베리파에서의 모델들의 추론 시간 최적화를 위한 도구|
+
+## 💾 실행결과
+
+### 📷 mono depth estimation
+
+![monodepth](./doc/monodepth_distance.PNG)
+
+---
+
+### 📹 real sense depth map
+
+![realsense](./doc/realsense.PNG)
+
+---
+
+## 📣 벤치마크 결과
+
+![benchmark](./doc/detection_benchmark.PNG)
+---
+
+
+
 
 ## 📎  참고
 GitHub 링크
