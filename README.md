@@ -1,18 +1,19 @@
 # 🚗 Au-mo Deto Solution | Auto-Moto Call with Object & Gesture Detection  
 ![Framework](https://img.shields.io/badge/Framework-Hadgrid-blue)
-![YOLO](https://img.shields.io/badge/YOLOv10-blue)
+![YOLO](https://img.shields.io/badge/YOLOv5-blue)
 ![Language](https://img.shields.io/badge/Language-Python-yellow)
 ![Vision](https://img.shields.io/badge/Vision-StereoVision-critical)
 ![Library](https://img.shields.io/badge/Library-OpenCV-blueviolet)
 ![Toolkit](https://img.shields.io/badge/Toolkit-OpenVINO-success)
 
-스테레오 비젼 시스템과 객체 인식 모델을 융합한 팔로잉 로봇 카 프로젝트
+비젼기반 거리 측정 시스템과 객체 인식 모델을 융합한 팔로잉 로봇 카 프로젝트
 
 다양한 상황에 대응되는 시나리오로 여러 기능을 제공(카 이동, 카 회전, 요청자 위치까지 이동, 요청자 따라가기)
 
 여러 객체인식, 분류기 모델들의 벤치마킹을 통한 모델 기능 비교
 
 ---
+## 
 
 ## 🏗 High Level Design
 
@@ -43,7 +44,7 @@
 
 ## 🔁 시스템 흐름도 (Flowchart)
 
-![flow-chart](./doc/flowchart2.png)
+![flow-chart](./doc/flowchart.PNG)
 
 ---
 
@@ -69,11 +70,22 @@
 
 
 -->다운로드 후 npz파일은 camera디렉토리에 첨부. xml, bin 파일은 camera/models에 첨부.
+
 **카메라 파라미터는 본인이 사용하는 webcam에 맞게 calibration을 직접 진행해주셔야합니다**
+
 --
 
-## 📂 구조 및 폴더 설명
+## 📂 클래스 다이어그램
 
+효율적인 시스템 구현을 위해 필요한 모듈들을 직접 구현 ( 카메라 , 모터 , 인공지능 관련 기능들 모듈화)
+
+### 🚗 모터, 카메라 관련 모듈
+
+[!motor_camera_class_diagram](./doc/class_diagra_moon.PNG)
+
+### 📡 인공지능 관련 모듈
+
+[!ai_class_diagram](./doc/class_diagram_kim.PNG)
 
 ---
 
