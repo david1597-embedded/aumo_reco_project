@@ -11,4 +11,5 @@ openvino
 numpy
 onnx
 pyrealsense2
+ultralytics
 

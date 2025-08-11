@@ -1,4 +1,4 @@
-import pyrealsense2 as rs
+
 import numpy as np
 import cv2
 import logging
@@ -8,11 +8,11 @@ import math
 
 class RealSense:
     def __init__(self,filter_size = 3, filter_use = False, cam_param_path = './camera/camera_parameter.npz'):
-        self.pipeline = rs.pipeline()
-        config = rs.config()
-        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
-        self.pipeline.start(config)
+        #self.pipeline = rs.pipeline()
+        # config = rs.config()
+        # config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        # config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+        # self.pipeline.start(config)
         self.filter_size = filter_size
         self.filter_use = filter_use
         
@@ -45,8 +45,9 @@ class RealSense:
 
     #measuring depth by pixel
     def measuredistance(self, depth_frame, px,py):
-        depth_meter = depth_frame.get_distance(px, py)
-        return depth_meter
+        #depth_meter = depth_frame.get_distance(px, py)
+        #return depth_meter
+        pass
     
     def measureangle(self,  px, py , distance):
         X = (px - self.cx) * distance / self.fx

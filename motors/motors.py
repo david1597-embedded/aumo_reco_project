@@ -146,7 +146,7 @@ class MotorController:
             self.motor_stop()
 
             return distance, yaw
-        elif:
+        else:
             return distance, yaw
 
             
